@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="AI予想">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAACJklEQVR4nO3UsSqGUQDHYWQ0sJjUJyWT2C2mT26B6xCXQK7DNchmsZNJSgaThcFocAN+dUpheJ7533tOb7/O7ORgOgPfmfvrC/B/iYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgzf/OMc8XVyOz1cO9mZuHoS/ubFw9vowM99ZXFpbOR5Yfb0f3J68jy83T5cXdoV/3fv15t/00sty6XbvfPx46/fJsZPZzXg6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDNDs5mP71HfinvBwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIH6QuTARnnsH4aOQAAAABJRU5ErkJggg==">
+<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAALQAAAC0CAIAAACyr5FlAAACJklEQVR4nO3UsSqGUQDHYWQ0sJjUJyWT2C2mT26B6xCXQK7DNchmsZNJSgaThcFocAN+dUpheJ7533tOb7/O7ORgOgPfmfvrC/B/iYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgiYMkDpI4SOIgzf/OMc8XVyOz1cO9mZuHoS/ubFw9vowM99ZXFpbOR5Yfb0f3J68jy83T5cXdoV/3fv15t/00sty6XbvfPx46/fJsZPZzXg6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDJA6SOEjiIImDNDs5mP71HfinvBwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIHSRwkcZDEQRIH6QuTARnnsH4aOQAAAABJRU5ErkJggg==">
+<title>競馬AI予想カード</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Zen+Kaku+Gothic+New:wght@400;500;700&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+html{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+/* Layout: 出馬表の紙面を縦一列のカードに。上部に会場フィルタ、各レースは上位5頭→全頭展開 */
+:root{
+  --bg:#eef0ec; --paper:#ffffff; --ink:#1b2430; --muted:#5f6b75; --line:#d9ddd6;
+  --accent:#1f5a46; --accent-soft:#dcebe3; --ev:#b5651d; --ev-soft:#fbead7; --warn:#a33a2a; --warn-soft:#f7e0dc;
+  --bar:#2f7a5f;
+  --f-display:"Dela Gothic One","Hiragino Sans","Noto Sans JP",sans-serif;
+  --f-body:"Zen Kaku Gothic New","Hiragino Sans","Noto Sans JP",system-ui,sans-serif;
+  --f-num:"JetBrains Mono",ui-monospace,"SF Mono",Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#12171c; --paper:#1b2228; --ink:#e7ebe8; --muted:#97a3ab; --line:#2c353d;
+  --accent:#6cc4a0; --accent-soft:#1e3a31; --ev:#f0a65c; --ev-soft:#3d2c1a; --warn:#f08a78; --warn-soft:#3f2420;
+  --bar:#5cb592; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#12171c; --paper:#1b2228; --ink:#e7ebe8; --muted:#97a3ab; --line:#2c353d;
+  --accent:#6cc4a0; --accent-soft:#1e3a31; --ev:#f0a65c; --ev-soft:#3d2c1a; --warn:#f08a78; --warn-soft:#3f2420;
+  --bar:#5cb592; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:0 40px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.wrap{max-width:620px;margin:0 auto}
+header{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);padding-block:14px 10px;display:grid;gap:10px;border-bottom:1px solid var(--line)}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+h1{font-family:var(--f-display);font-weight:400;font-size:1.35rem;margin:0;letter-spacing:.02em;text-wrap:balance}
+.date{color:var(--muted);font-size:.85rem}
+.load{display:inline-flex;align-items:center;gap:6px;font:inherit;font-size:.85rem;font-weight:700;color:var(--accent);background:var(--accent-soft);border:0;border-radius:999px;padding:8px 14px;cursor:pointer}
+.load input{position:absolute;width:1px;height:1px;opacity:0}
+.load:focus-within{outline:2px solid var(--accent);outline-offset:2px}
+.chips{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none}
+.chip{flex:0 0 auto;font:inherit;font-size:.9rem;font-weight:500;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:6px 14px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.navbtn{color:var(--accent);border-color:var(--accent)}
+.navbtn.first{margin-left:auto}
+.note{font-size:.8rem;color:var(--muted);margin:10px 0 0}
+.status{font-size:.8rem;color:var(--muted)}
+.status.err{color:var(--warn)}
+main{display:grid;gap:14px;margin-top:14px}
+.race{background:var(--paper);border:1px solid var(--line);border-radius:10px;overflow:hidden;scroll-margin-top:150px}
+.race.past{opacity:.55}
+.race.next{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.rhead{display:flex;align-items:baseline;gap:10px;padding:12px 14px 8px;border-bottom:1px solid var(--line)}
+.rno{font-family:var(--f-display);font-size:1.5rem;line-height:1}
+.rno small{font-family:var(--f-body);font-size:.8rem;font-weight:700;margin-left:2px}
+.venue{font-weight:700}
+.time{font-family:var(--f-num);font-weight:700;font-size:1rem}
+.meta{margin-left:auto;color:var(--muted);font-size:.8rem;display:flex;gap:8px;align-items:center}
+.tag{font-size:.72rem;font-weight:700;border-radius:4px;padding:1px 6px;letter-spacing:.04em}
+.tag.next{background:var(--accent);color:var(--paper)}
+.tag.done{background:var(--line);color:var(--muted)}
+.cols{display:grid;grid-template-columns:2.2em 2em 1fr 4.4em 3.8em;gap:8px;padding:6px 14px 2px;font-size:.7rem;color:var(--muted);letter-spacing:.06em}
+.cols span:nth-child(n+4){text-align:right}
+ol{list-style:none;margin:0;padding:0 0 4px}
+li{display:grid;grid-template-columns:2.2em 2em 1fr 4.4em 3.8em;gap:8px;align-items:center;padding:7px 14px;border-top:1px solid var(--line)}
+li:first-child{border-top:0}
+.rank{font-family:var(--f-num);font-size:.85rem;color:var(--muted)}
+li.top1 .rank{color:var(--accent);font-weight:700}
+.umaban{width:1.9em;height:1.9em;display:grid;place-items:center;border-radius:5px;font-family:var(--f-num);font-weight:700;font-size:.85rem;border:1px solid rgba(0,0,0,.18)}
+.w1{background:#ffffff;color:#1b2430}.w2{background:#1f1f1f;color:#fff}.w3{background:#d8352a;color:#fff}.w4{background:#2b6bd1;color:#fff}
+.w5{background:#f2d230;color:#1b2430}.w6{background:#2f9a4a;color:#fff}.w7{background:#f08a24;color:#1b2430}.w8{background:#f2a3bd;color:#1b2430}
+.name{min-width:0}
+.name b{display:block;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+li.top1 .name b{font-size:1.02rem}
+.prob{display:flex;align-items:center;gap:6px;font-family:var(--f-num);font-size:.78rem;color:var(--muted)}
+.track{flex:1;height:5px;background:var(--line);border-radius:3px;overflow:hidden;max-width:140px}
+.fill{height:100%;background:var(--bar);border-radius:3px}
+.odds,.ev{text-align:right;font-family:var(--f-num);font-variant-numeric:tabular-nums;font-size:.88rem}
+.odds small{font-size:.7rem;color:var(--muted)}
+.ev span{display:inline-block;padding:1px 5px;border-radius:4px}
+.ev .hi{background:var(--ev-soft);color:var(--ev);font-weight:700}
+.ev .bad{background:var(--warn-soft);color:var(--warn);font-weight:700;font-family:var(--f-body);font-size:.7rem}
+.more{display:block;width:100%;font:inherit;font-size:.85rem;font-weight:700;color:var(--accent);background:transparent;border:0;border-top:1px solid var(--line);padding:10px;cursor:pointer}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.78rem;color:var(--muted);margin-top:16px}
+.legend .ev span{font-size:.72rem}
+.empty{background:var(--paper);border:1px dashed var(--line);border-radius:10px;padding:24px;text-align:center;color:var(--muted)}
+@media (max-width:380px){
+  .cols,li{grid-template-columns:1.8em 1.9em 1fr 4em 3.4em;gap:6px}
+  .track{display:none}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+html{scroll-behavior:smooth}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="top">
+      <div>
+        <h1>AI予想カード</h1>
+        <div class="date" id="date">—</div>
+      </div>
+      <label class="load">ファイルを開く
+        <input type="file" id="file" accept=".txt,text/plain">
+      </label>
+    </div>
+    <div class="chips" id="chips" role="group" aria-label="会場で絞り込む"></div>
+    <div class="status" id="status"></div>
+  </header>
+
+  <main id="races"></main>
+
+  <div class="legend">
+    <span>色付きの馬番は枠色（頭数から計算）</span>
+    <span class="ev"><span class="hi">1.25</span> EV 1.0以上</span>
+    <span class="ev"><span class="bad">要確認</span> 単勝999.9倍など、オッズが正しく取れていない可能性</span>
+  </div>
+  <p class="note">表示しているのはモデルの出力そのままです。EVは発表時点のオッズで計算された値で、オッズが動けば変わります。将来の成績を保証するものではありません。</p>
+</div>
+
+<script>
+(function(){
+  const KEY = "keiba-card-last";
+  const $ = id => document.getElementById(id);
+  let data = null, venue = "全部", openAll = new Set();
+
+  function parse(text){
+    const lines = text.replace(/\r/g,"").split("\n");
+    const out = {date:null, label:"", races:[]};
+    let cur = null;
+    const reHead = /===\s*(\d{4})年(\d{1,2})月(\d{1,2})日(\([^)]*\))?\s*(.*?)\s*===/;
+    const reRace = /^---\s*(\d{1,2}):(\d{2})\s+(\S+?)(\d{1,2})R\s*---/;
+    const reHorse = /(★)?\s*(\d+)位\s+(\d+)番\s+(.+?)\s+\S*勝率予測\s+([\d.]+)%\s+単勝\s+([\d.]+)倍\s+EV\s+([\d.]+)/;
+    for (const raw of lines){
+      const s = raw.trim();
+      let m;
+      if ((m = s.match(reHead))){
+        out.date = {y:+m[1], m:+m[2], d:+m[3], w:m[4]||""};
+        out.label = m[5];
+      } else if ((m = s.match(reRace))){
+        cur = {h:+m[1], min:+m[2], time:m[1].padStart(2,"0")+":"+m[2], venue:m[3], no:+m[4], horses:[]};
+        out.races.push(cur);
+      } else if (cur && (m = s.match(reHorse))){
+        cur.horses.push({star:!!m[1], rank:+m[2], num:+m[3], name:m[4].trim(), p:+m[5], odds:+m[6], ev:+m[7]});
+      }
+    }
+    out.races = out.races.filter(r => r.horses.length);
+    return out;
+  }
+
+  // JRAの枠番：8頭以下は馬番=枠番。9頭以上は外の枠から順に2頭（3頭）入り
+  function waku(num, n){
+    if (n <= 8) return num;
+    const base = Math.floor(n/8), extra = n % 8;
+    let start = 1;
+    for (let w = 1; w <= 8; w++){
+      const size = base + (w > 8 - extra ? 1 : 0);
+      if (num < start + size) return w;
+      start += size;
+    }
+    return 8;
+  }
+
+  function isToday(d){
+    if (!d) return false;
+    const t = new Date();
+    return t.getFullYear()===d.y && t.getMonth()+1===d.m && t.getDate()===d.d;
+  }
+
+  function nextIndex(){
+    if (!data || !isToday(data.date)) return -1;
+    const now = new Date(), mins = now.getHours()*60 + now.getMinutes();
+    return data.races.findIndex(r => r.h*60 + r.min > mins);
+  }
+
+  // 直前に発走したレース（今日のファイルのときだけ）
+  function prevIndex(){
+    if (!data || !isToday(data.date)) return -1;
+    const ni = nextIndex();
+    if (ni === -1) return data.races.length - 1;
+    return ni - 1;
+  }
+
+  function esc(s){return s.replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));}
+
+  function renderChips(){
+    const venues = ["全部", ...new Set(data.races.map(r => r.venue))];
+    const ni = nextIndex();
+    $("chips").innerHTML = venues.map(v =>
+      `<button class="chip" type="button" data-v="${esc(v)}" aria-pressed="${v===venue}">${esc(v)}</button>`
+    ).join("");
+    const pi = prevIndex();
+    let nav = "";
+    if (pi >= 0) nav += `<button class="chip navbtn${nav ? "" : " first"}" type="button" data-jump="prev">前のレースへ</button>`;
+    if (ni >= 0) nav += `<button class="chip navbtn${nav ? "" : " first"}" type="button" data-jump="next">次のレースへ</button>`;
+    $("chips").innerHTML += nav;
+  }
+
+  function render(){
+    if (!data || !data.races.length){
+      $("races").innerHTML = `<div class="empty">予想ファイルの形式を読み取れませんでした。<br>「ファイルを開く」から win_model_fold5_full_…txt を選んでください。</div>`;
+      return;
+    }
+    const d = data.date;
+    $("date").textContent = d ? `${d.y}年${d.m}月${d.d}日${d.w}　${data.races.length}レース` : `${data.races.length}レース`;
+    renderChips();
+    const ni = nextIndex(), today = isToday(d);
+    const now = new Date(), mins = now.getHours()*60 + now.getMinutes();
+    $("races").innerHTML = data.races.map((r, i) => {
+      if (venue !== "全部" && r.venue !== venue) return "";
+      const n = r.horses.length;
+      const past = today && r.h*60 + r.min <= mins;
+      const isNext = i === ni;
+      const showAll = openAll.has(i);
+      const list = showAll ? r.horses : r.horses.slice(0, 5);
+      const maxP = Math.max(...r.horses.map(h => h.p), 1);
+      const rows = list.map(h => {
+        const bad = h.odds >= 999;
+        const evCell = bad ? `<span class="bad">要確認</span>` : `<span class="${h.ev >= 1 ? "hi" : ""}">${h.ev.toFixed(2)}</span>`;
+        return `<li class="${h.rank===1?"top1":""}">
+          <span class="rank">${h.rank}</span>
+          <span class="umaban w${waku(h.num, n)}" aria-label="${h.num}番">${h.num}</span>
+          <span class="name"><b>${esc(h.name)}</b>
+            <span class="prob"><span class="track"><span class="fill" style="width:${(h.p/maxP*100).toFixed(1)}%"></span></span>${h.p.toFixed(1)}%</span></span>
+          <span class="odds">${h.odds.toFixed(1)}<small>倍</small></span>
+          <span class="ev">${evCell}</span>
+        </li>`;
+      }).join("");
+      const tag = isNext ? `<span class="tag next">次</span>` : past ? `<span class="tag done">発走済</span>` : "";
+      return `<section class="race${past?" past":""}${isNext?" next":""}" id="race-${i}">
+        <div class="rhead">
+          <span class="rno">${r.no}<small>R</small></span>
+          <span class="venue">${esc(r.venue)}</span>
+          <span class="time">${r.time}</span>
+          <span class="meta">${tag}${n}頭</span>
+        </div>
+        <div class="cols"><span>順位</span><span>馬番</span><span>馬名・勝率予測</span><span>単勝</span><span>EV</span></div>
+        <ol>${rows}</ol>
+        ${n > 5 ? `<button class="more" type="button" data-i="${i}">${showAll ? "上位5頭だけ表示" : `全${n}頭を表示`}</button>` : ""}
+      </section>`;
+    }).join("");
+  }
+
+  function load(text, source){
+    const parsed = parse(text);
+    if (!parsed.races.length){
+      $("status").textContent = `${source} からレースを読み取れませんでした。予想ファイルか確認してください。`;
+      $("status").className = "status err";
+      return false;
+    }
+    data = parsed; venue = "全部"; openAll = new Set();
+    $("status").textContent = source;
+    $("status").className = "status";
+    render();
+    return true;
+  }
+
+  $("file").addEventListener("change", e => {
+    const f = e.target.files[0];
+    if (!f) return;
+    const rd = new FileReader();
+    rd.onload = () => {
+      if (load(rd.result, `読み込み：${f.name}`)){
+        try { localStorage.setItem(KEY, JSON.stringify({name:f.name, text:rd.result})); } catch(_){}
+      }
+    };
+    rd.readAsText(f, "utf-8");
+    e.target.value = "";
+  });
+
+  $("chips").addEventListener("click", e => {
+    const b = e.target.closest("button");
+    if (!b) return;
+    if (b.dataset.jump){
+      const ti = b.dataset.jump === "prev" ? prevIndex() : nextIndex();
+      if (ti < 0) return;
+      if (venue !== "全部" && data.races[ti].venue !== venue){ venue = "全部"; render(); }
+      const el = $("race-" + ti);
+      if (el) el.scrollIntoView({block:"start"});
+      return;
+    }
+    venue = b.dataset.v; render();
+  });
+
+  $("races").addEventListener("click", e => {
+    const b = e.target.closest(".more");
+    if (!b) return;
+    const i = +b.dataset.i;
+    openAll.has(i) ? openAll.delete(i) : openAll.add(i);
+    render();
+  });
+
+  let saved = null;
+  try { saved = JSON.parse(localStorage.getItem(KEY) || "null"); } catch(_){}
+  if (!(saved && saved.text && load(saved.text, `前回の読み込み：${saved.name}`))){
+    $("races").innerHTML = `<div class="empty">右上の「ファイルを開く」から、iCloud Driveにある<br>win_model_fold5_full_…txt を選んでください。<br><br>開いたファイルはこのiPhoneに記憶され、次回は自動で表示されます。</div>`;
+  }
+  setInterval(() => { if (data && isToday(data.date)) render(); }, 60000);
+})();
+</script>
+</body>
+</html>
